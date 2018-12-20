@@ -1,0 +1,27 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "None",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex-cr17/project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alex-cr17/project/issues"
+  },
+  "homepage": "https://github.com/Alex-cr17/project#readme",
+  "devDependencies": {
+    "express": "^4.16.4"
+  },
+  "dependencies": {
+    "koa": "^2.6.2",
+    "mongoose": "^5.4.0"
+  }
+}

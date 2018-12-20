@@ -1,0 +1,22 @@
+version: '2'
+services:
+  frontend:
+    build: ./client
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./client:/usr/src/app
+  web:
+    build: ./server
+    command: node index.js
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_monules
+    depends_on:
+      - "mongo"
+  mongo:
+    image: "mongo"
+    ports:
+      - "27017:27017"
