@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
-const DATABASE_CONECTION = 'mongodb://mongo:27017/test';
+const DATABASE_PORT = process.env.DATABASE_PORT || 27017;
+const DATABASE_HOST = process.env.DATABASE_HOST || 'localhost';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'mydb';
+const NODE_PORT = process.env.NODE_PORT || 8080;
+
+const DATABASE_CONECTION = `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`;
+
 
 var kittySchema = mongoose.Schema({
     name: String
