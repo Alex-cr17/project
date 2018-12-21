@@ -1,6 +1,6 @@
-git clone https://github.com/Alex-cr17/project
-cd  project
-npx create-react-app client
-docker-compose up
-// append demo.local to etc/hosts
-open http://demo.local
+git clone https://github.com/Alex-cr17/project<br>
+cd  project<br>
+npx create-react-app client<br>
+docker-compose up<br>
+// append demo.local to etc/hosts<br>
+open http://demo.local<br>
