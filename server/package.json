@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,13 @@
     "express": "^4.16.4"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "koa": "^2.6.2",
     "mongoose": "^5.4.0",
-    "nodemon": "^1.18.9"
-  }
+    "nodemon": "^1.18.9",
+    "socket.io": "^2.2.0",
+    "websocket": "^1.0.28",
+    "ws": "^6.1.2"
+  },
+  "proxy": "http://localhost:8080"
 }
