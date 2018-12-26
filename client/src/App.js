@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import SignUp from './pages/signUp/SignUp';
+import SignIn from './pages/signIn/SignIn';
+import NavigationBar from './components/NavigationBar';
+
+
 import List from './pages/List'
 // import { subscribeToTimer } from './api';
 import socketIOClient from 'socket.io-client'
 
-// import './App.css';
+import './App.css';
 // import {apiUrl} from '../src/config';
 
 
@@ -32,16 +36,13 @@ class App extends Component {
 
     return (
       <div>
+        <NavigationBar/>
         <Switch>
-          <Route exact path='/signUp' component={SignUp}/>
+          <Route exact path='/register' component={SignUp}/>
+          <Route exact path='/login' component={SignIn}/>
         </Switch>
-
-        <form>
-          <input type="text" ref={(input => this.message = input)}/>
-          <input type="submit" value="Send" onClick={(event) => this.sendMessage(event)}/>
-        </form>
-        <div id="correspondence">
-
+        <div>
+          Hello!
         </div>
       </div>
     );

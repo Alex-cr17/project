@@ -22,3 +22,9 @@ services: # Описывает сервисы и инструкции к ним
     volumes:
       - ./client:/home/app
     command: bash -c "npm install && npm start"
+  adminmongo:
+    image: adicom/admin-mongo
+    ports:
+      - 1234:1234
+    depends_on:
+      - database

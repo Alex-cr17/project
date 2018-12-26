@@ -1,44 +1,48 @@
+"use strict";
+
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+// const nunjucks = require('nunjucks');
+const server = require('http').Server(app);
+const io = require('socket.io')(server, {serveClient: true});
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
-
-// const database = require('./database');
+const passport = require('passport');
+const { Strategy } = require('passport-jwt');
 var cors = require('cors');
 var path = require('path');
-
-
-http.listen(8080, function() {
-    console.log('listening on port ', '8080');
-
-})
-
-io.on('connection', socket => {
-    console.log('New client connected')
-    
-    socket.on('send message', (message) => {
-      io.sockets.emit('send message', message)
-      console.log(message);
-    })
-    
-    socket.on('disconnect', () => {
-      console.log('user disconnected')
-    })
-  })
-
-// Serve the static files from the React app
-
-// app.use(express.static(__dirname + "/../client/build"));
-
+const { jwt } = require('./config');
 app.use(cors());
-// database.initializeMongo();
 
-// app.get('*', (req,res) =>{
-//     res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+passport.use(new Strategy(jwt, function(jwt_payload, done) {
+    if(jwt_payload != void(0)) return done(false, jwt_payload);
+    done();
+}));
+
+mongoose.connect('mongodb://database:27017/chat', {useMongoClient: true});
+mongoose.Promise = require('bluebird');
+mongoose.set('debug', true);
+
+// nunjucks.configure('./client/views', {
+//     autoescape: true,
+//     express: app
 // });
+app.use(express.static(__dirname + "/../client/build"));
 
-// app.get('/api', function(req, res) {
-//     var list = ["item1", "item2", "item3"];
-//     res.json(list);
-// })
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
+app.use(cookieParser());
+
+require('./router')(app);
+
+require('./sockets')(io);
+
+server.listen(8080, () => {
+    console.log('Server started on port 8080');
+});
