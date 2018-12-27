@@ -1,41 +1,28 @@
 {
-  "name": "project",
+  "name": "server",
   "version": "1.0.0",
-  "description": "None",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "test",
-    "start": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Alex-cr17/project.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Alex-cr17/project/issues"
-  },
-  "homepage": "https://github.com/Alex-cr17/project#readme",
-  "devDependencies": {
-    "express": "^4.16.4"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
-    "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
-    "jsonwebtoken": "^8.4.0",
-    "koa": "^2.6.2",
-    "lodash": "^4.17.11",
-    "mongoose": "^5.4.0",
+    "express": "^4.16.3",
+    "gravatar": "^1.6.0",
+    "http": "0.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.4",
     "nodemon": "^1.18.9",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "socket.io": "^2.2.0",
-    "websocket": "^1.0.28",
-    "ws": "^6.1.2"
-  },
-  "proxy": "http://localhost:8080"
+    "validator": "^10.4.0"
+  }
 }

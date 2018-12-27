@@ -1,23 +1,28 @@
-* {
-  padding: 0;
-  margin: 0;
-}
 .App {
   text-align: center;
 }
 
-.navbar  {
-  justify-content: space-between;
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
 }
-.right-menu {
-  cursor: pointer;
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
 }
-.form-signup {
-  display: flex;
-    flex-direction: column;
-    max-width: 550px;
-    margin: auto;
+
+.App-title {
+  font-size: 1.5em;
 }
-.page-signup {
-  text-align: center;
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

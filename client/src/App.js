@@ -1,50 +1,51 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import SignUp from './pages/signUp/SignUp';
-import SignIn from './pages/signIn/SignIn';
-import NavigationBar from './components/NavigationBar';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './store';
+import jwt_decode from 'jwt-decode';
+import setAuthToken from './setAuthToken';
+import { setCurrentUser, logoutUser } from './actions/authentication';
 
+import Navbar from './components/Navbar';
+import Register from './components/Register';
+import Login from './components/Login';
+import Home from './components/Home';
+import PrivateComponent from './components/PrivateComponent';
+import ChatComponent from './components/ChatComponent';
 
-import List from './pages/List'
-// import { subscribeToTimer } from './api';
-import socketIOClient from 'socket.io-client'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import './App.css';
-// import {apiUrl} from '../src/config';
+if(localStorage.jwtToken) {
+  console.log("localStorage.jwtToken", localStorage.jwtToken);
+  setAuthToken(localStorage.jwtToken);
+  const decoded = jwt_decode(localStorage.jwtToken);
+  store.dispatch(setCurrentUser(decoded));
 
+  const currentTime = Date.now() / 1000;
+  if(decoded.exp < currentTime) {
+    store.dispatch(logoutUser());
+    window.location.href = '/login'
+  }
+}
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      endpoint: "http://localhost:8080", 
-    }
-  }
-
-  sendMessage = (event) => {
-    event.preventDefault();
-    const socket = socketIOClient(this.state.endpoint)
-    socket.emit('send message', this.message.value) 
-  }
-
   render() {
-    const socket = socketIOClient(this.state.endpoint)
-    
-    socket.on('send message', (message) => {
-      document.getElementById('correspondence').append(message); 
-    });
-
     return (
-      <div>
-        <NavigationBar/>
-        <Switch>
-          <Route exact path='/register' component={SignUp}/>
-          <Route exact path='/login' component={SignIn}/>
-        </Switch>
-        <div>
-          Hello!
-        </div>
-      </div>
+      <Provider store = { store }>
+        <Router>
+            <div>
+              <Navbar />
+                <Route exact path="/" component={ Home } />
+                <Route path="/private" component={ PrivateComponent } />
+                <Route path="/chat" component={ ChatComponent } />
+
+                <div className="container">
+                  <Route exact path="/register" component={ Register } />
+                  <Route exact path="/login" component={ Login } />
+                </div>
+            </div>
+          </Router>
+        </Provider>
     );
   }
 }
