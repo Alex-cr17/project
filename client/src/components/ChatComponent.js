@@ -1,49 +1,62 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-export default class ChatComponent extends Component {
-   constructor(props) {
-    super(props);
+import { connect } from 'react-redux';
+import { chatUser } from '../actions/authentication';
+import { withRouter } from 'react-router-dom';
+
+class ChatComponent extends Component {
+   constructor() {
+    super();
     this.state = {
         message: ''
     }
    }
-   componentWillMount() {
-    const socket = io.connect('http://localhost:8080');
-    socket.on('connected', function (data) {
-      console.log(data);
-      socket.emit('my other event', { my: 'data' });
-    });
-   }
+
+componentWillReceiveProps(nextProps) {
+    if(nextProps.auth.isAuthenticated) {
+        this.props.history.push('/')
+    }
+    if(nextProps.errors) {
+        this.setState({
+            errors: nextProps.errors
+        });
+    }
+}
+
+componentDidMount() {
+    if(!this.props.auth.isAuthenticated) {
+        this.props.history.push('/');
+    }
+}
    onChangeMessage(event) {
        this.setState({
         [event.target.name]: event.target.value
        })
    }
-    handlerSendMessage(event) {
-    const socket = io.connect('http://localhost:8080');
+   handleSubmit() {
+    // e.preventDefault();
+    this.props.chatUser();
+}
 
-        event.preventDefault();
-        if(this.state.message !== '') {
-            socket.emit('msg', this.state.message);
-            socket.on('msg', data => this.addMessage(data))
-        }
+    // handlerSendMessage(event) {
+    // const socket = io.connect('http://localhost:8080');
 
-        this.textareaRefMessage.value = ''
-        this.setState({
-            [event.target.name]: ''
-           })
-    }
+    //     event.preventDefault();
+    //     if(this.state.message !== '') {
+    //         socket.emit('msg', this.state.message);
+    //         socket.on('msg', data => this.addMessage(data))
+    //     }
+
+    //     this.textareaRefMessage.value = ''
+    //     this.setState({
+    //         [event.target.name]: ''
+    //        })
+    // }
 
     addMessage(data) {
         document.getElementById('display_chat').append(`<div>${data.message}</div>`);
     }
     render() {
-        // const socket = io.connect('http://localhost:8080');
-        // socket.on('connected', function (data) {
-        //   console.log(data);
-        //   socket.emit('my other event', { my: 'data' });
-        // });
-
         return (
             <div>
                 <div className="display-chat" id="display_chat">
@@ -53,8 +66,15 @@ export default class ChatComponent extends Component {
 
                 </textarea>
                
-                <button onClick={(event)=> this.handlerSendMessage(event)}>Send</button>
+                <button onClick={(event)=> this.handleSubmit(event)}>Send</button>
             </div>
         );
     }
 }
+const mapStateToProps = state => ({
+    auth: state.auth,
+    errors: state.errors
+});
+
+// export default connect({ chatUser })(withRouter(ChatComponent))
+export  default connect(mapStateToProps, { chatUser })(ChatComponent)

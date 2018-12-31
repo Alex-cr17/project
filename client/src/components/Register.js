@@ -59,7 +59,7 @@ class Register extends Component {
         return(
         <div className="container" style={{ marginTop: '50px', width: '700px'}}>
             <h2 style={{marginBottom: '40px'}}>Registration</h2>
-            <form onSubmit={ this.handleSubmit }>
+            <form onSubmit={ (event) => this.handleSubmit(event) }>
                 <div className="form-group">
                     <input
                     type="text"

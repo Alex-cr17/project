@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions/authentication';
 import classnames from 'classnames';
-
 class Login extends Component {
 
     constructor() {
@@ -25,6 +24,7 @@ class Login extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+ 
         const user = {
             email: this.state.email,
             password: this.state.password,
@@ -32,22 +32,22 @@ class Login extends Component {
         this.props.loginUser(user);
     }
 
-    componentDidMount() {
-        if(this.props.auth.isAuthenticated) {
-            this.props.history.push('/');
-        }
-    }
+    // componentDidMount() {
+    //     if(this.props.auth.isAuthenticated) {
+    //         this.props.history.push('/');
+    //     }
+    // }
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.auth.isAuthenticated) {
-            this.props.history.push('/')
-        }
-        if(nextProps.errors) {
-            this.setState({
-                errors: nextProps.errors
-            });
-        }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     if(nextProps.auth.isAuthenticated) {
+    //         this.props.history.push('/')
+    //     }
+    //     if(nextProps.errors) {
+    //         this.setState({
+    //             errors: nextProps.errors
+    //         });
+    //     }
+    // }
 
     render() {
         const {errors} = this.state;

@@ -44,9 +44,7 @@ router.post('/register', function(req, res) {
                         if(err) console.error('There was an error', err);
                         else {
                             newUser.password = hash;
-                            newUser
-                                .save()
-                                .then(user => {
+                            newUser.save().then(user => {
                                     res.json(user)
                                 }); 
                         }
@@ -58,7 +56,7 @@ router.post('/register', function(req, res) {
 });
 
 router.post('/login', (req, res) => {
-
+    console.log(req)
     const { errors, isValid } = validateLoginInput(req.body);
 
     if(!isValid) {
@@ -83,7 +81,7 @@ router.post('/login', (req, res) => {
                                 avatar: user.avatar
                             }
                             jwt.sign(payload, 'secret', {
-                                expiresIn: 3600
+                                expiresIn: 500
                             }, (err, token) => {
                                 if(err) console.error('There is some error in token', err);
                                 else {
@@ -102,7 +100,8 @@ router.post('/login', (req, res) => {
         });
 });
 
-router.get('/me', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/chat', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log("chat", req, res)
     return res.json({
         id: req.user.id,
         name: req.user.name,

@@ -12,6 +12,9 @@ import Login from './components/Login';
 import Home from './components/Home';
 import PrivateComponent from './components/PrivateComponent';
 import ChatComponent from './components/ChatComponent';
+import RequireAuth from './components/hot/RequireAuth';
+import NotRequireAuth from './components/hot/NotRequireAuth';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,6 +22,7 @@ if(localStorage.jwtToken) {
   console.log("localStorage.jwtToken", localStorage.jwtToken);
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
+  console.log(decoded)
   store.dispatch(setCurrentUser(decoded));
 
   const currentTime = Date.now() / 1000;
@@ -26,7 +30,7 @@ if(localStorage.jwtToken) {
     store.dispatch(logoutUser());
     window.location.href = '/login'
   }
-}
+} 
 
 class App extends Component {
   render() {
@@ -36,12 +40,12 @@ class App extends Component {
             <div>
               <Navbar />
                 <Route exact path="/" component={ Home } />
-                <Route path="/private" component={ PrivateComponent } />
-                <Route path="/chat" component={ ChatComponent } />
+                {/* { <Route path="/private" component={ PrivateComponent } /> */}
+                <Route path="/chat" component={ RequireAuth(ChatComponent) } /> 
 
                 <div className="container">
-                  <Route exact path="/register" component={ Register } />
-                  <Route exact path="/login" component={ Login } />
+                  <Route exact path="/register" component={ NotRequireAuth(Register) } />
+                  <Route exact path="/login" component={ NotRequireAuth(Login) } />
                 </div>
             </div>
           </Router>
