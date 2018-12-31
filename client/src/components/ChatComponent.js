@@ -2,71 +2,52 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { chatUser } from '../actions/authentication';
-import { withRouter } from 'react-router-dom';
+import classnames from 'classnames';
 
 class ChatComponent extends Component {
    constructor() {
     super();
     this.state = {
-        message: ''
+        message: '',
+        errors: {}
     }
+   
    }
+   handleChange(e) {
+    e.preventDefault();
 
-componentWillReceiveProps(nextProps) {
-    if(nextProps.auth.isAuthenticated) {
-        this.props.history.push('/')
-    }
-    if(nextProps.errors) {
-        this.setState({
-            errors: nextProps.errors
-        });
-    }
-}
-
-componentDidMount() {
-    if(!this.props.auth.isAuthenticated) {
-        this.props.history.push('/');
-    }
-}
-   onChangeMessage(event) {
-       this.setState({
-        [event.target.name]: event.target.value
-       })
    }
-   handleSubmit() {
-    // e.preventDefault();
-    this.props.chatUser();
-}
-
-    // handlerSendMessage(event) {
-    // const socket = io.connect('http://localhost:8080');
-
-    //     event.preventDefault();
-    //     if(this.state.message !== '') {
-    //         socket.emit('msg', this.state.message);
-    //         socket.on('msg', data => this.addMessage(data))
-    //     }
-
-    //     this.textareaRefMessage.value = ''
-    //     this.setState({
-    //         [event.target.name]: ''
-    //        })
-    // }
-
-    addMessage(data) {
-        document.getElementById('display_chat').append(`<div>${data.message}</div>`);
-    }
+   handleSubmit(e) {
+    e.preventDefault();
+   }
     render() {
+        const { errors } = this.state;
         return (
             <div>
-                <div className="display-chat" id="display_chat">
-                
+                <div className="container channel" id="channel-" style={{ marginTop: '50px', width: '700px'}}>
                 </div>
-                <textarea name="message" ref={(textarea) => this.textareaRefMessage = textarea } onChange={(event => this.onChangeMessage(event))}>
-
-                </textarea>
-               
-                <button onClick={(event)=> this.handleSubmit(event)}>Send</button>
+               <div className="container" style={{ marginTop: '50px', width: '700px'}}>
+            <form onSubmit={ (event) => this.handleSubmit(event) }>
+                <div className="form-group">
+                    <textarea
+                    onChange={ (event) => this.handleChange(event) }
+                    type="text"
+                    placeholder="Enter a message"
+                    className={classnames('form-control form-control-lg', {
+                        'is-invalid': errors.message
+                    })}
+                    name="message"
+                    ></textarea>
+                    {errors.name && (<div className="invalid-feedback">{errors.message}</div>)}
+                </div>
+                
+                <div className="form-group">
+                    <button type="submit" className="btn btn-primary">
+                        Send message
+                    </button>
+                </div>
+            </form>
+        </div>
             </div>
         );
     }
