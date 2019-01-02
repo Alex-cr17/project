@@ -107,8 +107,6 @@ router.get('/getusers', passport.authenticate('jwt', { session: false }), (req, 
         dbo.collection("users").find({}).toArray(function(err, result) {
           if (err) throw err;
           return result;
-          console.log(result);
-          db.close();
         });
       });
 });
