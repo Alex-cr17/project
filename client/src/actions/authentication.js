@@ -45,9 +45,14 @@ export const chatUser = (history) => dispatch => {
     axios.post(`${apiUrl}/chat`, )
 }
 
+export const getUsersList = (history) => dispatch => {
+    axios.get(`${apiUrl}/getusers`).then(res => {
+        console.log(res);
+    })
+}
+
 export const logoutUser = (history) => dispatch => {
     localStorage.removeItem('jwtToken');
     setAuthToken(false);
     dispatch(setCurrentUser({}));
-    history.push('/login');
 }

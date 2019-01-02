@@ -19,10 +19,8 @@ import NotRequireAuth from './components/hot/NotRequireAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 if(localStorage.jwtToken) {
-  console.log("localStorage.jwtToken", localStorage.jwtToken);
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
-  console.log(decoded)
   store.dispatch(setCurrentUser(decoded));
 
   const currentTime = Date.now() / 1000;
@@ -41,7 +39,7 @@ class App extends Component {
               <Navbar />
                 <Route exact path="/" component={ Home } />
                 {/* { <Route path="/private" component={ PrivateComponent } /> */}
-                <Route path="/chat" component={ RequireAuth(ChatComponent) } /> 
+                <Route path="/getusers" component={ RequireAuth(ChatComponent) } /> 
 
                 <div className="container">
                   <Route exact path="/register" component={ NotRequireAuth(Register) } />

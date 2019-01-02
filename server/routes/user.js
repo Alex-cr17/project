@@ -6,9 +6,10 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
-
 const User = require('../models/User');
 
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb://database:27017/";
 router.post('/register', function(req, res) {
 
     const { errors, isValid } = validateRegisterInput(req.body);
@@ -28,7 +29,7 @@ router.post('/register', function(req, res) {
             const avatar = gravatar.url(req.body.email, {
                 s: '200',
                 r: 'pg',
-                d: 'mm'
+                d: 'monsterid'
             });
             const newUser = new User({
                 name: req.body.name,
@@ -56,7 +57,6 @@ router.post('/register', function(req, res) {
 });
 
 router.post('/login', (req, res) => {
-    console.log(req)
     const { errors, isValid } = validateLoginInput(req.body);
 
     if(!isValid) {
@@ -81,7 +81,7 @@ router.post('/login', (req, res) => {
                                 avatar: user.avatar
                             }
                             jwt.sign(payload, 'secret', {
-                                expiresIn: 5
+                                expiresIn: 3600
                             }, (err, token) => {
                                 if(err) console.error('There is some error in token', err);
                                 else {
@@ -98,6 +98,19 @@ router.post('/login', (req, res) => {
                         }
                     });
         });
+});
+
+router.get('/getusers', passport.authenticate('jwt', { session: false }), (req, res) => {
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("auth");
+        dbo.collection("users").find({}).toArray(function(err, result) {
+          if (err) throw err;
+          return result;
+          console.log(result);
+          db.close();
+        });
+      });
 });
 
 router.get('/chat', passport.authenticate('jwt', { session: false }), (req, res) => {
