@@ -1,91 +1,83 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import { getUsersList } from '../actions/authentication';
+import { getUsersList, getListMessages } from '../actions/authentication';
+import  { sendMessage } from'../socket_api';
+import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-
 import classnames from 'classnames';
-
 class ChatComponent extends Component {
    constructor() {
     super();
     this.state = {
         message: '',
-        errors: {}
+        errors: {},
+        timestamp: "not yet"
     }
-   
-   }
+}
    handleChange(e) {
     e.preventDefault();
-
+    this.setState({
+        [e.target.name]: e.target.value 
+    })
    }
-   handleSubmit(e) {
+   handleSendMessage(e) {
     e.preventDefault();
-   }
+
+    sendMessage(this.state.message, (err, message) => this.props.getListMessages(message));
+    console.log(this.props)
+  };
    componentDidMount() {
         this.props.getUsersList();
    }
     render() {
+        
         const { errors } = this.state;
-        return (
-            <div>
- <div className="container channels" id="channels" style={{ marginTop: '50px', width: '700px'}}>
-                
-                <ul >
-                    <li style={{ listStyleType: 'none', margin: '25px', border: '1px solid grey', justifyContent: 'space-beetwen'}}>
+        
+        const isFetching = false;
+        const object = _.map(this.props.users);
+        const users = object.map((item, index) => {
+            return (
+                <li key={index.toString()} style={{ listStyleType: 'none', margin: '25px', border: '1px solid grey', justifyContent: 'space-beetwen'}}>
                         <div>
-                        <span className="avatar">avatar</span>
-                        <span className="username">username</span>
+                        <img src={item.avatar} className="avatar"/>
+                        <span className="username">{item.name}</span>
                         </div>
                         <span className="btn btn-primary">Start conversation</span>
                     </li>
-                    <li className="highlight" style={{ listStyleType: 'none', margin: '25px', border: '1px solid grey'}}> 
-                        <div>
-                            <span className="avatar">avatar</span>
-                            <span className="username">username</span>
-                        </div>
-                        <span className="btn btn-primary">Start conversation</span></li>
-                    <li style={{ listStyleType: 'none', margin: '25px', border: '1px solid grey'}}> 
-                        <div>
-                            <span className="avatar">avatar</span>
-                            <span className="username">username</span>
-                        </div>
-                        <span className="btn btn-primary">Start conversation</span></li>
-
+            )
+            })
+        return (
+            <div>
+            
+                <div className="container-fluid channels" id="channels" style={{ marginTop: '50px'}}>
+                <div className="row">
+                {this.state.timestamp}
+                <div className="col-md-4">
+                <ul >
+                    { users } 
                 </ul>
                 </div>
-                {/* <div className="container channel" id="channel-" style={{ marginTop: '50px', width: '700px'}}>
+                <div className="col-md-8">
+                <ul id="chat">
+                </ul>
+                <textarea name="message" onChange={(event) => this.handleChange(event)}>
+
+                </textarea>
+                <button onClick={(event) => this.handleSendMessage(event)}>Send message</button>
                 </div>
-               <div className="container" style={{ marginTop: '50px', width: '700px'}}>
-            <form onSubmit={ (event) => this.handleSubmit(event) }>
-                <div className="form-group">
-                    <textarea
-                    onChange={ (event) => this.handleChange(event) }
-                    type="text"
-                    placeholder="Enter a message"
-                    className={classnames('form-control form-control-lg', {
-                        'is-invalid': errors.message
-                    })}
-                    name="message"
-                    ></textarea>
-                    {errors.name && (<div className="invalid-feedback">{errors.message}</div>)}
                 </div>
-                
-                <div className="form-group">
-                    <button type="submit" className="btn btn-primary">
-                        Send message
-                    </button>
+              
                 </div>
-            </form>
-        </div> */}
             </div>
         );
     }
 }
 const mapStateToProps = state => ({
     auth: state.auth,
-    errors: state.errors
+    errors: state.errors,
+    users: state.users
 });
 
 // export default connect({ chatUser })(withRouter(ChatComponent))
-export  default connect(mapStateToProps, { getUsersList })(withRouter(ChatComponent))
+export  default connect(mapStateToProps, { getUsersList, getListMessages })(ChatComponent)

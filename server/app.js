@@ -14,14 +14,14 @@ mongoose.connect(config.DB, { useNewUrlParser: true }).then(
     const PORT = 8080;
     
 const app = express();
+app.use(cors());
+// app.use(express.static(__dirname + "/../client/build"));
 const server = app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
 });
-app.use(cors());
+app.use(passport.initialize());
+require('./passport')(passport);
 const io = require('socket.io').listen(server)
-    require('./passport')(passport);
-    app.use(passport.initialize());
-    // app.use(express.static(__dirname + "/../client/build"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

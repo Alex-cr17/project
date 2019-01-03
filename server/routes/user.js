@@ -106,18 +106,18 @@ router.get('/getusers', passport.authenticate('jwt', { session: false }), (req, 
         var dbo = db.db("auth");
         dbo.collection("users").find({}).toArray(function(err, result) {
           if (err) throw err;
-          return result;
+          return res.json(result);
         });
       });
 });
 
 router.get('/chat', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log("chat", req, res)
     return res.json({
         id: req.user.id,
         name: req.user.name,
         email: req.user.email
     });
 });
+
 
 module.exports = router;

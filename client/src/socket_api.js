@@ -1,8 +1,12 @@
-import openSocket from 'socket.io-client';
-const  socket = openSocket('http://localhost:8080');
-function subscribeToTimer() {
-  socket.on('timer', timestamp => {
-      console.log(timestamp)
-  })
+import io from 'socket.io-client';
+const socket = io.connect('http://localhost:8080', {
+        'query': 'token=' + localStorage.jwtToken.split(' ')[1]
+    });
+    socket.on('connected', function (msg) {
+            console.log(msg);
+    });
+function sendMessage(message, cb) {
+  socket.emit('message', message);
+  socket.on('message', message => cb(null, message));
 }
-export { subscribeToTimer };
+export { sendMessage };

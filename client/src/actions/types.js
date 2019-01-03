@@ -1,2 +1,4 @@
 export const GET_ERRORS = 'GET_ERRORS';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_LIST_MESSAGES = 'GET_LIST_MESSAGES';
