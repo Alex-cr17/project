@@ -15,7 +15,8 @@ class ChatComponent extends Component {
     this.state = {
         message: '',
         errors: {},
-        history: []
+        history: [],
+        currentChannel: ''
     }
 }
    handleChange(e) {
@@ -30,6 +31,13 @@ class ChatComponent extends Component {
            'query': 'token=' + localStorage.jwtToken.split(' ')[1]
        });
 
+
+    // socket.on('change channel', function() {
+    //     // this.setState({
+    //     //     history: ''
+    //     // })
+    //     console.log('change channel')
+    // })
 
     socket.on('connect', function () {
         socket.emit('receiveHistory');
@@ -50,6 +58,12 @@ class ChatComponent extends Component {
       });
    }
 
+   handleChangeChannel(name) {
+    socket.emit('change channel', name)
+       this.setState({
+           currentChannel: name
+       })
+   }
 
    handleSendMessage(e) {
     e.preventDefault();
@@ -89,7 +103,8 @@ class ChatComponent extends Component {
         });
         const users = object.map((item, index) => {
             return (
-                <li key={index.toString()} style={{ listStyleType: 'none', padding: '15px', justifyContent: 'space-beetwen'}}>
+                <li key={index.toString()} name={item.name} onClick={(event) => this.handleChangeChannel(item.name)} 
+                className={(this.state.currentChannel==item.name) ? 'btn-primary' : 'btn-default'} style={ {  cursor: 'pointer', listStyleType: 'none', padding: '15px', justifyContent: 'space-beetwen'}}>
                         <div>
                         <div style={{justifyContent: "space-between"}}>
                         <img style={{ marginRight: "10px", borderRadius: '100%', width: '30px', height: '30px'}} src={item.avatar} className="avatar"/>
