@@ -8,5 +8,5 @@ export default combineReducers({
     errors: errorReducer,
     auth: authReducer,
     users: usersReducer,
-    listMessages: listMessagesReducer
+    data: listMessagesReducer
 });

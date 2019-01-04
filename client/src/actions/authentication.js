@@ -49,10 +49,10 @@ export const setAllUsers = users => {
     }
 }
 
-export const setListMessages = messages => {
+export const setListMessages = message => {
     return {
         type: GET_LIST_MESSAGES,
-        payload: messages
+        payload: message
     }
 }
 

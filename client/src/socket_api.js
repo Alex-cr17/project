@@ -7,6 +7,10 @@ const socket = io.connect('http://localhost:8080', {
     });
 function sendMessage(message, cb) {
   socket.emit('message', message);
-  socket.on('message', message => cb(null, message));
+  socket.on('message', message => {
+        console.log("message", message);
+        cb(null, message)
+        
+        });
 }
 export { sendMessage };

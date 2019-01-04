@@ -1,6 +1,5 @@
-// const MessageModel = require('./models/messages.model');
+const MessageModel = require('./models/Message');
 const socketioJwt = require('socketio-jwt');
-
 module.exports = io => {
   io.use(socketioJwt.authorize({
     secret: 'secret',
@@ -8,43 +7,36 @@ module.exports = io => {
   }));
 
   io.on('connection', function (socket) {
-      socket.emit('connected', `${socket.decoded_token.name} was connected`);
-      
-      socket.on('message', (message) => {
-        console.log(message);
-        socket.emit('message', message);
-        // socket.to('all').emit("message", message);
-      });
-    //  socket.on('message', content => {
-    //      console.log(content);
-    //     socket.emit("message", content);
+   
+    // sending message
+    socket.on('message', function (content) {
+      console.log(socket.decoded_token.name)
+      const obj = {
+        date: new Date(),
+        content: content,
+        name: socket.decoded_token.name
+    };
+    MessageModel.create(obj, err => {
+      if(err) return console.error("MessageModel", err);
+      io.emit("message", obj);
+  });
 
-            // const obj = {
-            //     date: new Date(),
-            //     content: content,
-            //     name: socket.name
-            // };
-
-            // MessageModel.create(obj, err => {
-            //     if(err) return console.error("MessageModel", err);
-            //     socket.emit("message", obj);
-            //     socket.to('all').emit("message", obj);
-            // });
-        // });
-
+    });
+// receiving
+    socket.on('receiveHistory', () => {
+      MessageModel
+          .find({})
+          .sort({date: -1})
+          .limit(50)
+          .sort({date: 1})
+          .lean()
+          .exec( (err, messages) => {
+              if(!err){
+                  socket.emit("history", messages);
+              }
+          })
   })
-        // socket.on('receiveHistory', () => {
-        //     MessageModel
-        //         .find({})
-        //         .sort({date: -1})
-        //         .limit(50)
-        //         .sort({date: 1})
-        //         .lean()
-        //         .exec( (err, messages) => {
-        //             if(!err){
-        //                 socket.emit("history", messages);
-        //             }
-        //         })
-        // })
-    // });
+
+  });
+
 };
