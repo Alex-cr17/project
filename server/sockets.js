@@ -1,14 +1,22 @@
 const MessageModel = require('./models/Message');
-const socketioJwt = require('socketio-jwt');
+const jwt = require('jsonwebtoken');
 module.exports = io => {
-  io.use(socketioJwt.authorize({
-    secret: 'secret',
-    handshake: true
-  }));
+  io.use(function(socket, next){
+    if (socket.handshake.query && socket.handshake.query.token){
+      jwt.verify(socket.handshake.query.token, 'secret', function(err, decoded) {
+        if(err) {
+          return next(new Error('Authentication error'));
+        }
+        socket.decoded = decoded;
+        next(false, {name: decoded.name, id: decoded.id});
+      });
+    } else {
+        next(new Error('Authentication error'));
+    }    
+  }).on('connection', function(socket) {
+      console.log('connected', `you are connected to chat as ${socket.decoded.name}`);
 
-  io.on('connection', function (socket) {
-   
-    let channel = socket.decoded_token.name;
+    let channel = socket.decoded.name;
     socket.join(channel);
     socket.on('change channel', function(newChannel) {
       console.log(newChannel);
@@ -19,15 +27,12 @@ module.exports = io => {
       socket.emit('change channel', newChannel)
     })
 
-
-
     // sending message
     socket.on('message', function (content) {
-      console.log(socket.decoded_token.name)
       const obj = {
         date: new Date(),
         content: content,
-        name: socket.decoded_token.name
+        name: socket.decoded.name
     };
     MessageModel.create(obj, err => {
       if(err) return console.error("MessageModel", err);
@@ -36,21 +41,18 @@ module.exports = io => {
   });
 
     });
-// receiving
-    socket.on('receiveHistory', () => {
-      MessageModel
-          .find({})
-          .sort({date: -1})
-          .limit(50)
-          .sort({date: 1})
-          .lean()
-          .exec( (err, messages) => {
-              if(!err){
-                  socket.emit("history", messages);
-              }
-          })
-  })
 
+// receiving
+socket.on('receiveHistory', () => {
+  MessageModel
+      .find({})
+      .lean()
+      .exec( (err, messages) => {
+          if(!err){
+              socket.emit("history", messages);
+          }
+      })
+})
   });
 
 };

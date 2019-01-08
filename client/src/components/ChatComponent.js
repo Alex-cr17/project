@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { getUsersList, getListMessages } from '../actions/authentication';
-// import  { sendMessage } from'../socket_api';
 import Moment from 'react-moment';
 import _ from 'lodash';
-import { withRouter } from 'react-router-dom';
-import classnames from 'classnames';
 
 let socket;
 class ChatComponent extends Component {
@@ -31,14 +28,6 @@ class ChatComponent extends Component {
            'query': 'token=' + localStorage.jwtToken.split(' ')[1]
        });
 
-
-    // socket.on('change channel', function() {
-    //     // this.setState({
-    //     //     history: ''
-    //     // })
-    //     console.log('change channel')
-    // })
-
     socket.on('connect', function () {
         socket.emit('receiveHistory');
     });
@@ -51,18 +40,10 @@ class ChatComponent extends Component {
       });
 
       socket.on('history', (history) => {
-          console.log("asdas", history)
         this.setState({
             history: history
         })
       });
-   }
-
-   handleChangeChannel(name) {
-    socket.emit('change channel', name)
-       this.setState({
-           currentChannel: name
-       })
    }
 
    handleSendMessage(e) {
@@ -149,5 +130,4 @@ const mapStateToProps = state => ({
     users: state.users
 });
 
-// export default connect({ chatUser })(withRouter(ChatComponent))
 export  default connect(mapStateToProps, { getUsersList, getListMessages })(ChatComponent)
